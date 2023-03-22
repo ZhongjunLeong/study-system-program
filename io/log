@@ -1,0 +1,35 @@
+fputc 和fgetc是在光标当前位置开始写和度的
+fseek确定流所在的位置；offset：偏移量 whence：相对位置（向前或向后偏移），成功返回为0，失败-1
+可得到一个字符0（空）的文件，该文件用来占用空间（由offset设置），待后续使用时空间足够
+
+seek_set文件首     fseek（fp，0，seek-set）//从fp这个文件的文件首偏移0个开始 
+seek_cur文件当前位置   fseek（fp，-10，seek-cur）//从fp这个文件的当前位置向前偏移10个位置开始
+seek_end文件尾
+
+ftell 告诉文件当前位置在哪，常与fseek一起用,可获得文件长度；ftell返回值是从文件开始到当前位置的大小；
+fseeko 和ftello你补了fseek和ftell long型大小的不足（太小了），
+int fseeko(FILE *stream,off_t offset, int whence);
+off_t ftello(FILE *stream);//off_t typedef类型 可能32位。。在一些体系中在编译时加#define _FILE_OFFSET_BITD = 64 off_t变成64位大小。所以可在makefile中添加CFLAGS+=-D_FILE_OFFSET_BITS=64
+
+
+void rewind（flie *stream）相当于 （void）fseek(stream,0L,SEEK_SET);回到文件开始处
+
+fflush（stream）；刷新stream；强制刷新缓冲区；fflush（NULL）,刷新所有缓冲区；:
+*缓冲区的作用：大多数情况下使好事，合并系统调用
+ * 
+ * 行缓冲IOLBF：换行时刷新；满了的时候刷新；强制刷新（标准输出是这样的，因为是终端设备）
+ *
+ * 全缓冲IOFBF：满了的时候刷新；强制刷新（默认，只要不是终端设备）
+ *
+ *无缓冲IONBF：如stderr，需要立即输出的内容
+ *
+ *可修改：setvbuf函数//光标停在要man的函数中间，命令行模式shift+k，可进入man 
+ *setvbuf（）可用在任何缓冲模式下修改
+ *
+ * */
+
+printf往标准输出（行缓冲模式）时通过换行来刷新缓冲区（或行满刷新）以此来执行当前语句，否则不会执行
+
+
+
+
