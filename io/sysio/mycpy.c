@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 	int sfd,dfd;
 	char buf[BUFFSIZE];
 	int len,ret,pos;
+  int count = 0;
 	if(argc < 3)
 	{
 		fprintf(stderr,"usage..\n");
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
 		}
 		if(len == 0)
 			break;
+      count++;
 		pos = 0;
 		while(len > 0)//确保写入成功，如len=10，但只写入3个，这是ret仍然大于0；
 		{
@@ -50,8 +52,9 @@ int main(int argc, char **argv)
 			}
 			pos += ret;
 		len -= ret;//?
+    }
 	}
-
+  printf("%d\n",count);
 	close(dfd);
 	close(sfd);
 	exit(0);
