@@ -7,25 +7,31 @@
 #define BUFFSIZE 1024
 int readline(int fd,char *buf)//line char num
 {
-  int cnum;
+ // printf("readline\n");
+  int cnum = 0;
   for(;;)
   {
     read(fd,&buf[cnum],1);
     cnum++;
-    if(*(buf-1) == '\n')
+    if(buf[cnum-1] == '\n')
     {
       break;
     }
+//    printf("not finish readline,%d\n",cnum);
   }
+  printf("finish reline\n");
   return cnum;
 }
 int get_line(int fd,char *buf,int linenum)//get linenum total char
 {
+  printf("get_line\n");
   int i = 0,llnum,lsum = 0;
   while(i != linenum)
   {
+ // printf("i while\n");
     llnum = readline(fd,buf);
     lsum += llnum;
+ //   printf("lsum\n");
     i++;
   }
   return lsum;
@@ -33,22 +39,25 @@ int get_line(int fd,char *buf,int linenum)//get linenum total char
   
 int get_line_num(int fd,int *size)//get total line num &file size 
 {
-  size_t fdr;
-  int i,lnum;
+ 
+  int i,lnum = 0;
   char ch;
-  while((fdr = read(fd,&ch,1)) > 0)//read line num
+  while(read(fd,&ch,1) > 0)//read line num
   {
+    printf("in get_line_num\n");
       (*size)++;
           if(ch == '\n')
           {
               lnum++;
           }
+        
   }
-     
+     printf("out get_line_num\n");
   return lnum;
 }
 int main(int argc,char**argv)
 {
+  printf("start\n");
   int fd1,fd11;
   int llnum,lcnum;
   off_t d11,d10;
@@ -61,6 +70,7 @@ int main(int argc,char**argv)
     exit(1);
   }
   fd1 = open(argv[1],O_RDWR);
+  printf("fd1 open%s\n",argv[1]);
   if(fd1 == 0)
   {
     perror("open()");
@@ -68,8 +78,10 @@ int main(int argc,char**argv)
   }
   l10 = get_line(fd1,buf,10);//desitiate in 10 line
   l11 = get_line(fd1,buf,11);
+  lseek(fd1,0,SEEK_SET);
   llnum = get_line_num(fd1,&size);
   fprintf(stdout,"l10:%dl11: %d\n",l10,l11);
+  printf("l10:%dl11: %d\n",l10,l11);
   d10 = lseek(fd1,l10,SEEK_SET);
   fprintf(stdout,"d10:%d\n",d10);
   fd11 = open(argv[1],O_RDONLY);
@@ -86,10 +98,12 @@ int main(int argc,char**argv)
   s = d11 - d10;
     size_t ch;
     ssize_t fd11r,fd1w;
+    printf("s:%d\n",s);
   while(1)
   {
 
     fd11r = read(fd11,&ch,1);
+    printf("in while(1)\n");
     if(fd11r < 0)
     {
       perror("read()");
