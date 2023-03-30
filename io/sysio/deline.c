@@ -44,7 +44,7 @@ int get_line_num(int fd,int *size)//get total line num &file size
   char ch;
   while(read(fd,&ch,1) > 0)//read line num
   {
-    printf("in get_line_num\n");
+  //  printf("in get_line_num\n");
       (*size)++;
           if(ch == '\n')
           {
@@ -52,7 +52,7 @@ int get_line_num(int fd,int *size)//get total line num &file size
           }
         
   }
-     printf("out get_line_num\n");
+    // printf("out get_line_num\n");
   return lnum;
 }
 int main(int argc,char**argv)
@@ -60,7 +60,7 @@ int main(int argc,char**argv)
   printf("start\n");
   int fd1,fd11;
   int llnum,lcnum;
-  off_t d11,d10;
+  off_t d11,d10,fir,fnal;
   int l10,l11;
   char buf[BUFFSIZE];
   int size = 0,s;
@@ -78,13 +78,13 @@ int main(int argc,char**argv)
   }
   l10 = get_line(fd1,buf,10);//desitiate in 10 line
   l11 = get_line(fd1,buf,11);
-  lseek(fd1,0,SEEK_SET);
+  fir = lseek(fd1,0,SEEK_END);
   llnum = get_line_num(fd1,&size);
   fprintf(stdout,"l10:%dl11: %d\n",l10,l11);
-  printf("l10:%dl11: %d\n",l10,l11);
+ // printf("l10:%dl11: %d\n",l10,l11);
   d10 = lseek(fd1,l10,SEEK_SET);
-  fprintf(stdout,"d10:%d\n",d10);
-  fd11 = open(argv[1],O_RDONLY);
+  fprintf(stdout,"d10:%ld\n",d10);
+  fd11 = open(argv[2],O_RDONLY);
   if(fd11 < 0)
   {
      close(fd1);
@@ -94,7 +94,7 @@ int main(int argc,char**argv)
 
   d11 = lseek(fd11,l11,SEEK_SET);
 
-  fprintf(stdout,"d11:%d\n",d11);
+  fprintf(stdout,"d11:%ld\n",d11);
   s = d11 - d10;
     size_t ch;
     ssize_t fd11r,fd1w;
@@ -103,7 +103,7 @@ int main(int argc,char**argv)
   {
 
     fd11r = read(fd11,&ch,1);
-    printf("in while(1)\n");
+    //printf("fd11r:%ld\n",fd11r);
     if(fd11r < 0)
     {
       perror("read()");
@@ -115,9 +115,11 @@ int main(int argc,char**argv)
     }
       
     fd1w = write(fd1,&ch,1);
+   // printf("fd1w%ld\n",fd1w);
   }
   ftruncate(fd1,size-s);
-
+  fnal = lseek(fd1,0,SEEK_END);
+  printf("fir:%ld,fnal:%ld\n",fir,fnal);
   close(fd1);
   close(fd11);
 
