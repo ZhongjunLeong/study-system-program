@@ -1,11 +1,9 @@
 #include <stdlib.h>
 #include <stdiio.h>
 #include <signal.h>
-#include <errno.h>
 #include "mytbf.h"
 static int inited = 0;
 static struct mytbf_st *job[MYTBF_MAX];
-typedef void(*sighandler_t)(int);
 static sighandler_t alrm_handler_save;
 struct mytbf_st
 {
@@ -45,7 +43,7 @@ static void module_load(void)
   alarm(1);
   atexit(module_unload);
 }
-static int get_free_pos(void)
+static get_free_pos(void)
 {
   int i;
   for(i = 0; i < MYTBF_MAX;i++)
@@ -59,7 +57,6 @@ static int get_free_pos(void)
 mytbf_t *mytbf_init(int cps ,int burst)
 {
   struct mytbf_st *me;
-  int pos;
   if(!inited)
   {
     module_load();
@@ -90,7 +87,6 @@ static int min(int a,int b)
 int mytbf_fetchtoken(mytbf_t *ptr, int size)
 {
   struct mytbf_st *me = ptr;
-  int n;
   if(size <= 0)
     return -EINVAL;
   while(me->token <= 0)
