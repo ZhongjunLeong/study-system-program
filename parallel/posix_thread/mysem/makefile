@@ -9,4 +9,4 @@ mysem:main.o mysem.o
 
 
 clean:
-rm -rf *.o mysem
+    rm -rf *.o mysem
